@@ -98,8 +98,7 @@ export default function TasksPage() {
   const loadTasks = useCallback(async () => {
     setLoading(true);
     try {
-      const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''));
-      const { data } = await tasksApi.list(params);
+const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '' && v !== null && v !== undefined));      const { data } = await tasksApi.list(params);
       setTasks(data.data);
       setPagination(data.pagination);
     } catch (_) {}
@@ -108,8 +107,11 @@ export default function TasksPage() {
 
   useEffect(() => { loadTasks(); }, [loadTasks]);
 
-  const handleSaved = () => { setModal(null); loadTasks(); showToast('Task saved!'); };
-
+const handleSaved = async () => { 
+  setModal(null); 
+  await loadTasks(); 
+  showToast('Task saved!'); 
+};
   const handleDelete = async (id) => {
     try {
       await tasksApi.delete(id);
